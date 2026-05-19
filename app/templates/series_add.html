@@ -1,0 +1,175 @@
+{% extends "base.html" %} {% block content %}
+<section class="form-page">
+    <a class="back-link" href="{{ url_for('home.home') }}">&larr; Cancel</a>
+    <h1>Add a series</h1>
+    <p>Add any series you like.</p>
+
+    <form method="post">
+        <fieldset>
+            <legend>Basics</legend>
+            <label for="content_name">Content name *</label>
+            <input
+                id="content_name"
+                name="content_name"
+                placeholder="e.g. Supernatural"
+                required
+            />
+
+            <div class="form_row">
+                <div>
+                    <label for="type">Type *</label>
+                    <select id="type" name="type" required>
+                        <option value="tv">TV</option>
+                        <option value="movie">Movie</option>
+                        <option value="anime">Anime</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="podcast">Podcast</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="release_year">Release Year*</label>
+                    <input
+                        id="release_year"
+                        name="release_year"
+                        type="number"
+                        value="{{ current_year }}"
+                        min="1888"
+                        max="{{ current_year }}"
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Length</legend>
+            <div class="form-row">
+                <div>
+                    <label for="total_seasons">Total seasons</label>
+                    <input
+                        id="total_seasons"
+                        name="total_seasons"
+                        type="number"
+                        value="1"
+                        min="0"
+                    />
+                </div>
+                <div>
+                    <label for="total_episodes">Total episodes</label>
+                    <input
+                        id="total_episodes"
+                        name="total_episodes"
+                        type="number"
+                        value="1"
+                        min="0"
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Details</legend>
+            <label for="cover_url"
+                >Image URL <span class="optional">(optional)</span></label
+            >
+            <input id="cover_url" name="cover_url" placeholder="https://..." />
+
+            <div id="link_url_group">
+                <label for="link_url">YouTube Link URL*</label>
+                <input
+                    id="link_url"
+                    name="link_url"
+                    type="url"
+                    placeholder="https://..."
+                    required
+                />
+            </div>
+
+            <label for="description"
+                >Description <span class="optional">(optional)</span></label
+            >
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+                placeholder="What's it about?"
+            ></textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Visibility</legend>
+            <label class="checkbox-label">
+                <input type="checkbox" name="is_public" checked />
+                <div>
+                    <strong>Make this public</strong>
+                    <p>
+                        Public series appear in everyone's homepage and search
+                        results. Private series are only visible to you.
+                    </p>
+                </div>
+            </label>
+        </fieldset>
+        <div class="form-actions">
+            <a href="{{ url_for('home.home') }}">Cancel</a>
+            <button type="submit">Add series</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    // prevent user from typing letters and clamp year to current or min
+    function intInputOnly(el, max) {
+        el.addEventListener('keydown', function(e) {
+            if (!/^\d$/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key))
+                e.preventDefault();
+        });
+        el.addEventListener('blur', function() {
+            const v = parseInt(this.value);
+            if (!isNaN(v))
+                this.value = Math.min(Math.max(v, parseInt(this.min) || 0), max);
+        });
+    }
+    // also prevent user from typing in a trillion episodes or something
+    intInputOnly(document.getElementById('release_year'), {{ current_year }});
+    intInputOnly(document.getElementById('total_episodes'), 9999);
+    intInputOnly(document.getElementById('total_seasons'), 999);
+
+    // regex for if its a valid url or not
+    function urlInputOnly(el) {
+        el.addEventListener('blur', function() {
+            const val = this.value.trim();
+            if (val && !/^https?:\/\/.+\..+/.test(val)) {
+                this.setCustomValidity('Must be a valid URL starting with http:// or https://');
+                this.reportValidity();
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+        el.addEventListener('input', function() { this.setCustomValidity(''); });
+    }
+
+    urlInputOnly(document.getElementById('cover_url'));
+    urlInputOnly(document.getElementById('link_url'));
+
+    // show/hide link URL based on type
+    const typeSelect = document.getElementById('type');
+    const linkGroup = document.getElementById('link_url_group');
+    const linkInput = document.getElementById('link_url');
+    document.getElementById('link_url').addEventListener('blur', function() {
+        const val = this.value.trim();
+        if (val && !/^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/.test(val)) {
+            this.setCustomValidity('Must be a valid YouTube URL');
+            this.reportValidity();
+        }
+    });
+
+    function updateLinkField() {
+        const isYoutube = typeSelect.value === 'youtube';
+        linkGroup.style.display = isYoutube ? '' : 'none';
+        linkInput.required = isYoutube;
+    }
+
+    typeSelect.addEventListener('change', updateLinkField);
+    updateLinkField();
+</script>
+
+{% endblock %}

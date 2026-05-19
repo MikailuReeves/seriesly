@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from .routes import auth, home
+from .routes import auth, home, series
 from . import db
 
 def create_app(test_config=None):
@@ -17,5 +17,6 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(home.bp)
+    app.register_blueprint(series.bp, url_prefix='/series')
 
     return app

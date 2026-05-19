@@ -1,33 +1,50 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Seriesly{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <nav class="topbar">
-    <a class="brand" href="{{ url_for('home.home') }}">Seriesly</a>
-    <div class="nav-actions">
-      {% if g.user %}
-        <span>{{ g.user.username }}</span>
-        <form action="{{ url_for('auth.logout') }}" method="post">
-          <button type="submit" class="link-button">Log out</button>
-        </form>
-      {% else %}
-        <a href="{{ url_for('auth.login') }}">Log in</a>
-        <a class="button" href="{{ url_for('auth.signup') }}">Sign up</a>
-      {% endif %}
-    </div>
-  </nav>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}Seriesly{% endblock %}</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="topbar">
+            <button onclick="toggleTheme()" class="link-button">
+                Toggle dark mode
+            </button>
+            <a class="brand" href="{{ url_for('home.home') }}">Seriesly</a>
+            <div class="nav-actions">
+                {% if g.user %}
+                <span>{{ g.user.username }}</span>
+                <form action="{{ url_for('auth.logout') }}" method="post">
+                    <button type="submit" class="link-button">Log out</button>
+                </form>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}">Log in</a>
+                <a class="button" href="{{ url_for('auth.signup') }}"
+                    >Sign up</a
+                >
+                {% endif %}
+            </div>
+        </nav>
 
-  <main class="page">
-    {% for message in get_flashed_messages() %}
-      <p class="flash">{{ message }}</p>
-    {% endfor %}
-
-    {% block content %}{% endblock %}
-  </main>
-</body>
+        <main class="page">
+            {% for message in get_flashed_messages() %}
+            <p class="flash">{{ message }}</p>
+            {% endfor %} {% block content %}{% endblock %}
+        </main>
+    </body>
 </html>
+<script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        const next = html.dataset.theme === "dark" ? "light" : "dark";
+        html.dataset.theme = next;
+        localStorage.setItem("theme", next);
+    }
+    // load saved preference
+    const saved = localStorage.getItem("theme");
+    if (saved) document.documentElement.dataset.theme = saved;
+</script>

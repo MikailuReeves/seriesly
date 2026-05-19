@@ -82,7 +82,7 @@ CREATE TABLE user_content (
     user_id INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
     content_id INTEGER NOT NULL REFERENCES content (content_id) ON DELETE CASCADE,
     status TEXT NOT NULL DEFAULT 'watching' CHECK (
-        status IN ('watching', 'paused', 'completed', 'dropped')
+        status IN ('watching', 'paused', 'completed', 'dropped', 'plan to watch')
     ),
     current_episode INTEGER,
     current_season INTEGER,
