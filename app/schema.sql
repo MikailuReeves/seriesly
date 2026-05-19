@@ -33,7 +33,7 @@ CREATE TABLE content (
     link_url TEXT,
     cover_url TEXT,
     description TEXT,
-    type TEXT NOT NULL CHECK (type IN (
+    type TEXT NOT NULL DEFAULT NULL CHECK (type IN (
         'tv',
         'movie',
         'youtube',

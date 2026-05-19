@@ -8,7 +8,7 @@
 </head>
 <body>
   <nav class="topbar">
-    <a class="brand" href="{{ url_for('home') }}">Seriesly</a>
+    <a class="brand" href="{{ url_for('home.home') }}">Seriesly</a>
     <div class="nav-actions">
       {% if g.user %}
         <span>{{ g.user.username }}</span>

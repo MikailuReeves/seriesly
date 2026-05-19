@@ -1,18 +1,18 @@
-{% extends "base.html" %}
-
-{% block title %}Seriesly{% endblock %}
-
-{% block content %}
-  <section class="panel">
+{% extends "base.html" %} {% block title %}Seriesly{% endblock %} {% block
+content %}
+<section class="panel">
     <h1>Track what you watch.</h1>
     {% if g.user %}
-      <p>Welcome back, {{ g.user.username }}. Next slice: adding content and progress tracking.</p>
+    <p>
+        Welcome back, {{ g.user.username }}. Next slice: adding content and
+        progress tracking.
+    </p>
     {% else %}
-      <p>Make an account, log in.</p>
-      <div class="actions">
+    <p>Make an account, log in.</p>
+    <div class="actions">
         <a class="button" href="{{ url_for('auth.signup') }}">Create account</a>
         <a href="{{ url_for('auth.login') }}">Log in</a>
-      </div>
+    </div>
     {% endif %}
-  </section>
+</section>
 {% endblock %}

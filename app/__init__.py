@@ -1,7 +1,8 @@
 import os
 
-from flask import Flask, render_template
-
+from flask import Flask
+from .routes import auth, home
+from . import db
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -12,16 +13,9 @@ def create_app(test_config=None):
     if test_config is not None:
         app.config.update(test_config)
 
-    from . import db
-
     db.init_app(app)
 
-    from .routes import auth
-
     app.register_blueprint(auth.bp)
-
-    @app.route("/")
-    def home():
-        return render_template("home.html")
+    app.register_blueprint(home.bp)
 
     return app

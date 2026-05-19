@@ -80,7 +80,7 @@ def signup():
             else:
                 session.clear()
                 session["user_id"] = user["user_id"]
-                return redirect(url_for("home"))
+                return redirect(url_for("home.home"))
 
         flash(error)
 
@@ -112,7 +112,7 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user["user_id"]
-            return redirect(url_for("home"))
+            return redirect(url_for("home.home"))
 
         flash(error)
 
@@ -122,4 +122,4 @@ def login():
 @bp.route("/logout", methods=("POST",))
 def logout():
     session.clear()
-    return redirect(url_for("home"))
+    return redirect(url_for("auth.login"))
