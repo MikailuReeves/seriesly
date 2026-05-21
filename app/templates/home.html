@@ -1,18 +1,49 @@
-{% extends "base.html" %} {% block title %}Seriesly{% endblock %} {% block
-content %}
-<section class="panel">
-    <h1>Track what you watch.</h1>
-    {% if g.user %}
-    <p>
-        Welcome back, {{ g.user.username }}. Next slice: adding content and
-        progress tracking.
-    </p>
-    {% else %}
-    <p>Make an account, log in.</p>
-    <div class="actions">
-        <a class="button" href="{{ url_for('auth.signup') }}">Create account</a>
-        <a href="{{ url_for('auth.login') }}">Log in</a>
+{% extends "base.html" %} {% block content %}
+<div class="page-header">
+    <div>
+        <h2>Welcome back, {{ session['username'] }}</h2>
+        <p>{{ my_content | length }} tracking</p>
     </div>
-    {% endif %}
+    <a href="{{ url_for('series.add') }}" class="button">+ Add a series</a>
+</div>
+
+<section style="margin-top: 32px">
+    <h3 class="section-title">My series</h3>
+    <div class="card-grid">
+        {% for item in my_content %}
+        <a
+            href="{{ url_for('series.detail', content_id=item['content_id']) }}"
+            class="card"
+        >
+            <div
+                class="card-cover"
+                style="background: {{ item['cover_url'] or 'var(--color-surface-alt)' }};"
+            >
+                <span class="type-badge">{{ item['type'] }}</span>
+            </div>
+            <div class="card-body">
+                <p class="card-title">{{ item['content_name'] }}</p>
+                <div class="card-meta">
+                    <span class="status-badge status-{{ item['status'] }}"
+                        >{{ item['status'] }}</span
+                    >
+                    <span class="card-progress-text">
+                        {% if item['current_season'] %}S{{
+                        item['current_season'] }} · {% endif %} E{{
+                        item['current_episode'] or 0 }}
+                    </span>
+                </div>
+                <div class="progress-bar">
+                    <div
+                        class="progress-fill"
+                        style="width: {{ item['progress'] }}%;"
+                    ></div>
+                </div>
+            </div>
+        </a>
+        {% else %}
+        <p>You're not tracking anything yet.</p>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}
