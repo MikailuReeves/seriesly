@@ -1,7 +1,7 @@
 from app.db import get_db
 from datetime import date
 from app.routes.auth import login_required
-from flask import Blueprint, render_template, request, flash, session, redirect, url_for
+from flask import Blueprint, render_template, request, flash, session, redirect, url_for, abort
 
 bp = Blueprint("series", __name__)
 
@@ -61,6 +61,12 @@ def detail(content_id):
         "SELECT * FROM content WHERE content_id = %s",
         (content_id,)
     ).fetchone()
+
+    if content is None:
+        abort(404)
+
+    if content['is_private'] and content['created_by'] != session['user_id']:
+        abort(403)
 
     owner = db.execute(
         "SELECT username FROM users WHERE user_id = %s",
