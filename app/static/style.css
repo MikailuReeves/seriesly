@@ -284,6 +284,7 @@ fieldset .form-row label {
     color: var(--color-text);
     overflow: hidden;
     text-decoration: none;
+    margin-bottom: 32px;
 }
 .card:hover {
     border-color: var(--color-accent);
@@ -291,7 +292,9 @@ fieldset .form-row label {
 .card-cover {
     align-items: flex-end;
     display: flex;
-    height: 140px;
+    aspect-ratio: 2/3;
+    background-size: cover;
+    background-position: center;
     padding: 10px;
 }
 .type-badge {
@@ -480,4 +483,123 @@ fieldset .form-row label {
 }
 .progress-text strong {
     color: var(--color-accent);
+}
+
+.search-bar {
+    margin-top: 16px;
+}
+.search-wrapper {
+    position: relative;
+}
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.search-icon svg {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-muted);
+    display: block;
+}
+
+.search-wrapper input {
+    padding-left: 36px;
+}
+.list-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.list-row {
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.list-row:last-child {
+    border-bottom: none;
+}
+.list-row:hover {
+    background: var(--color-surface-alt);
+}
+.list-avatar {
+    align-items: center;
+    background: var(--color-accent);
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius);
+    display: flex;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+    color: #fff;
+}
+.list-row-info {
+    flex: 1;
+    min-width: 0;
+}
+.list-row-title {
+    font-weight: 600;
+}
+.list-row-year {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin-left: 6px;
+}
+.list-row-sub {
+    color: var(--color-text-muted);
+    display: block;
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+.list-row-end {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    flex-shrink: 0;
+}
+.list-row-rating {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+.list-row-arrow {
+    color: var(--color-text-muted);
+}
+.type-pill {
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+}
+.type-tv {
+    background: #e8f0e8;
+    color: #3a6b3a;
+}
+.type-anime {
+    background: #f0e8f0;
+    color: #6b3a6b;
+}
+.type-youtube {
+    background: #fce8e8;
+    color: #8b3a3a;
+}
+.type-podcast {
+    background: #f0ece4;
+    color: #6b5a3a;
+}
+.type-movie {
+    background: #e8ecf0;
+    color: #3a4a6b;
 }
