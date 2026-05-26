@@ -23,10 +23,13 @@ def home():
     # query for public content
     public_content = db.execute(
         """
-        SELECT *
-        FROM content
-        WHERE is_private = false
-        ORDER BY content_name
+        SELECT c.*, u.username, AVG(r.stars) as avg_rating
+        FROM content c
+        JOIN users u ON u.user_id = c.created_by
+        LEFT JOIN reviews r ON r.content_id = c.content_id
+        WHERE c.is_private = false
+        GROUP BY c.content_id, u.username
+        ORDER BY c.content_name
         """).fetchall()
 
     for item in my_content:

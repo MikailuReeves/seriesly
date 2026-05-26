@@ -7,6 +7,22 @@
     <a href="{{ url_for('series.add') }}" class="button">+ Add a series</a>
 </div>
 
+<!-- TODO: add functionality to search -->
+<div class="search-wrapper">
+    <span class="search-icon">
+        <svg width="16" height="16">
+            <use
+                href="{{ url_for('static', filename='icons.svg') }}#icon-search"
+            />
+        </svg>
+    </span>
+    <input
+        class="search-bar"
+        type="text"
+        placeholder="Search series by name..."
+    />
+</div>
+
 <section style="margin-top: 32px">
     <h3 class="section-title">My series</h3>
     <div class="card-grid">
@@ -17,7 +33,7 @@
         >
             <div
                 class="card-cover"
-                style="background: {{ item['cover_url'] or 'var(--color-surface-alt)' }};"
+                style="background-image: url('{{ item['cover_url'] }}');"
             >
                 <span class="type-badge">{{ item['type'] }}</span>
             </div>
@@ -43,6 +59,51 @@
         </a>
         {% else %}
         <p>You're not tracking anything yet.</p>
+        {% endfor %}
+    </div>
+    <h3 class="section-title">Public Series</h3>
+    <div class="list-panel">
+        {% for item in public_content %}
+        <a
+            href="{{ url_for('series.detail', content_id=item['content_id']) }}"
+            class="list-row"
+        >
+            <div class="list-avatar"
+                {% if item['cover_url'] %}
+                    style="background-image: url('{{ item['cover_url'] }}');"
+                {% endif %}>
+                {% if not item['cover_url'] %}
+                    <span>{{ item['content_name'][:2] | upper }}</span>
+                {% endif %}
+            </div>
+            <div class="list-row-info">
+                <div>
+                    <span class="list-row-title"
+                        >{{ item['content_name'] }}</span
+                    >
+                    <span class="list-row-year"
+                        >{{ item['release_year'] }}</span
+                    >
+                </div>
+                <span class="list-row-sub"
+                    >added by @{{ item['username'] }} · {{ item['total_seasons']
+                    or '?' }}S / {{ item['total_episodes'] or '?' }}E</span
+                >
+            </div>
+            <div class="list-row-end">
+                <span class="type-pill type-{{ item['type'] }}"
+                    >{{ item['type'] }}</span
+                >
+                <span class="list-row-rating">
+                    {% if item['avg_rating'] %} {{ '★' * item['avg_rating'] |
+                    int }} {{ item['avg_rating'] }} {% else %} no reviews {%
+                    endif %}
+                </span>
+                <span class="list-row-arrow">&rarr;</span>
+            </div>
+        </a>
+        {% else %}
+        <p style="padding: 16px">No public series yet.</p>
         {% endfor %}
     </div>
 </section>
