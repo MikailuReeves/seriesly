@@ -23,7 +23,7 @@ def home():
     # query for public content
     public_content = db.execute(
         """
-        SELECT c.*, u.username, AVG(r.stars) as avg_rating
+        SELECT c.*, u.username, ROUND(AVG(r.stars), 1) as avg_rating
         FROM content c
         JOIN users u ON u.user_id = c.created_by
         LEFT JOIN reviews r ON r.content_id = c.content_id

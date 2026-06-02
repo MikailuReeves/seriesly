@@ -40,6 +40,9 @@
 
         <!-- if we want to add profiles later currently does nothing -->
         <p class="username-tag">Added by <a href="#">@{{ owner['username'] }}</a></p>
+        {% if content['created_by'] == session['user_id'] and content['is_private'] %}
+        <a href="{{ url_for('series.edit', content_id=content['content_id']) }}" class="button" style="margin-top: 8px; display: inline-block; font-size: 0.9em; padding: 4px 8px;">Edit series</a>
+        {% endif %}
     </div>
 </div>
 <section style="margin-top: 32px">
@@ -97,5 +100,35 @@
 
 <section style="margin-top: 32px">
     <h3 class="section-title">Reviews</h3>
+    <div class="panel" style="margin-bottom: 24px;">
+        <form method="post" action="{{ url_for('reviews.submit', content_id=content['content_id']) }}">
+            <div class="form-row">
+                <div style="flex-grow: 1;">
+                    <label for="body">Write a review (optional)</label>
+                    <textarea id="body" name="body" rows="2" placeholder="What did you think?"></textarea>
+                </div>
+                <div style="width: 100px;">
+                    <label for="stars">Stars</label>
+                    <input id="stars" name="stars" type="number" min="1" max="5" required value="5">
+                </div>
+            </div>
+            <button type="submit" class="button" style="margin-top: 8px;">Post Review</button>
+        </form>
+    </div>
+    <div class="list-panel">
+        {% for review in reviews %}
+        <div class="list-row" style="align-items: flex-start;">
+            <div style="flex-grow: 1;">
+                <p><strong>@{{ review['username'] }}</strong> <span style="color: #666; margin-left: 8px;">{{ review['created_at'].strftime('%Y-%m-%d') if review['created_at'] else '' }}</span></p>
+                <div style="margin-top: 4px; color: #ffb400;">{{ '★' * review['stars'] }}{{ '☆' * (5 - review['stars']) }}</div>
+                {% if review['body'] %}
+                <p style="margin-top: 8px;">{{ review['body'] }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <p style="padding: 16px">No reviews yet.</p>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}

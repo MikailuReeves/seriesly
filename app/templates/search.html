@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Search Results</h2>
+        <p>Searching for "{{ q }}"</p>
+    </div>
+    <a href="{{ url_for('home.home') }}" class="button">Back to Home</a>
+</div>
+
+{% if error %}
+<div style="padding: 16px; color: red;">{{ error }}</div>
+{% endif %}
+
+<section style="margin-top: 32px">
+    <div class="list-panel">
+        {% for item in results %}
+        <a href="{{ url_for('series.detail', content_id=item['content_id']) }}" class="list-row">
+            <div class="list-avatar"
+                {% if item['cover_url'] %}
+                    style="background-image: url('{{ item['cover_url'] }}');"
+                {% endif %}>
+                {% if not item['cover_url'] %}
+                    <span>{{ item['content_name'][:2] | upper }}</span>
+                {% endif %}
+            </div>
+            <div class="list-row-info">
+                <div>
+                    <span class="list-row-title">{{ item['content_name'] }}</span>
+                    <span class="list-row-year">{{ item['release_year'] }}</span>
+                </div>
+                <span class="list-row-sub">added by @{{ item['username'] }} · {{ item['total_seasons'] or '?' }}S / {{ item['total_episodes'] or '?' }}E</span>
+            </div>
+            <div class="list-row-end">
+                <span class="type-pill type-{{ item['type'] }}">{{ item['type'] }}</span>
+                <span class="list-row-arrow">&rarr;</span>
+            </div>
+        </a>
+        {% else %}
+        <p style="padding: 16px">No results found.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

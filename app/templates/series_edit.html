@@ -1,0 +1,186 @@
+{% extends "base.html" %} {% block content %}
+<section class="form-page">
+    <a class="back-link" href="{{ url_for('series.detail', content_id=content['content_id']) }}">&larr; Cancel</a>
+    <h1>Edit series</h1>
+    <p>Update your series details.</p>
+
+    <form method="post">
+        <fieldset>
+            <legend>Basics</legend>
+            <label for="content_name">Content name *</label>
+            <input
+                id="content_name"
+                name="content_name"
+                value="{{ content['content_name'] }}"
+                required
+            />
+
+            <div class="form_row">
+                <div>
+                    <label for="type">Type *</label>
+                    <select id="type" name="type" required>
+                        <option value="tv" {% if content['type'] == 'tv' %}selected{% endif %}>TV</option>
+                        <option value="movie" {% if content['type'] == 'movie' %}selected{% endif %}>Movie</option>
+                        <option value="anime" {% if content['type'] == 'anime' %}selected{% endif %}>Anime</option>
+                        <option value="youtube" {% if content['type'] == 'youtube' %}selected{% endif %}>YouTube</option>
+                        <option value="podcast" {% if content['type'] == 'podcast' %}selected{% endif %}>Podcast</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="release_year">Release Year*</label>
+                    <input
+                        id="release_year"
+                        name="release_year"
+                        type="number"
+                        value="{{ content['release_year'] or current_year }}"
+                        min="1888"
+                        max="{{ current_year }}"
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Length</legend>
+            <div class="form-row">
+                <div>
+                    <label for="total_seasons">Total seasons</label>
+                    <input
+                        id="total_seasons"
+                        name="total_seasons"
+                        type="number"
+                        value="{{ content['total_seasons'] or 1 }}"
+                        min="0"
+                    />
+                </div>
+                <div>
+                    <label for="total_episodes">Total episodes</label>
+                    <input
+                        id="total_episodes"
+                        name="total_episodes"
+                        type="number"
+                        value="{{ content['total_episodes'] or 1 }}"
+                        min="0"
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Details</legend>
+            <label for="cover_url">Image URL <span class="optional">(optional)</span></label>
+            <input id="cover_url" name="cover_url" value="{{ content['cover_url'] or '' }}" />
+
+            <div id="link_url_group">
+                <label for="link_url">YouTube Link URL*</label>
+                <input
+                    id="link_url"
+                    name="link_url"
+                    type="url"
+                    value="{{ content['link_url'] or '' }}"
+                />
+            </div>
+
+            <label for="description">Description <span class="optional">(optional)</span></label>
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+            >{{ content['description'] or '' }}</textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Visibility</legend>
+            <p style="color: #666; font-size: 0.9em; margin-bottom: 8px;">
+                This series is <strong>Private</strong>. 
+                <br>Database rules prevent changing the visibility of a series after it has been created.
+            </p>
+        </fieldset>
+        <div class="form-actions">
+            <a href="{{ url_for('series.detail', content_id=content['content_id']) }}">Cancel</a>
+            <button type="submit">Save changes</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    // prevent user from typing letters and clamp year to current or min
+    function intInputOnly(el, max) {
+        el.addEventListener("keydown", function (e) {
+            if (
+                !/^\d$/.test(e.key) &&
+                ![
+                    "Backspace",
+                    "Delete",
+                    "ArrowLeft",
+                    "ArrowRight",
+                    "Tab",
+                ].includes(e.key)
+            )
+                e.preventDefault();
+        });
+        el.addEventListener("blur", function () {
+            const v = parseInt(this.value);
+            if (!isNaN(v))
+                this.value = Math.min(
+                    Math.max(v, parseInt(this.min) || 0),
+                    max,
+                );
+        });
+    }
+    intInputOnly(document.getElementById("release_year"), {{ current_year }}); 
+    intInputOnly(document.getElementById("total_episodes"), 9999);
+    intInputOnly(document.getElementById("total_seasons"), 999);
+
+    ['total_episodes', 'total_seasons'].forEach(function(id) {
+        document.getElementById(id).addEventListener('blur', function() {
+            if (this.value === '' || this.value <= 0) this.value = 1;
+        });
+    });
+
+    function urlInputOnly(el) {
+        el.addEventListener("blur", function () {
+            const val = this.value.trim();
+            if (val && !/^https?:\/\/.+\..+/.test(val)) {
+                this.setCustomValidity(
+                    "Must be a valid URL starting with http:// or https://",
+                );
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("");
+            }
+        });
+        el.addEventListener("input", function () {
+            this.setCustomValidity("");
+        });
+    }
+
+    urlInputOnly(document.getElementById("cover_url"));
+    urlInputOnly(document.getElementById("link_url"));
+
+    const typeSelect = document.getElementById("type");
+    const linkGroup = document.getElementById("link_url_group");
+    const linkInput = document.getElementById("link_url");
+    document.getElementById("link_url").addEventListener("blur", function () {
+        const val = this.value.trim();
+        if (
+            val &&
+            !/^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/.test(
+                val,
+            )
+        ) {
+            this.setCustomValidity("Must be a valid YouTube URL");
+            this.reportValidity();
+        }
+    });
+
+    function updateLinkField() {
+        const isYoutube = typeSelect.value === "youtube";
+        linkGroup.style.display = isYoutube ? "" : "none";
+        linkInput.required = isYoutube;
+    }
+
+    typeSelect.addEventListener("change", updateLinkField);
+    updateLinkField();
+</script>
+{% endblock %}

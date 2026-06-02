@@ -85,4 +85,68 @@ def detail(content_id):
         elif content['total_episodes'] and tracking['current_episode']:
             progress = round(tracking['current_episode'] / content['total_episodes'] * 100)
 
-    return render_template('series_detail.html', content=content, owner=owner, tracking=tracking, progress=progress)
+    reviews = db.execute(
+        """SELECT r.*, u.username 
+           FROM reviews r
+           JOIN users u ON r.user_id = u.user_id
+           WHERE r.content_id = %s
+           ORDER BY r.created_at DESC
+        """,
+        (content_id,)
+    ).fetchall()
+
+    review_count = len(reviews)
+    avg_rating = round(sum(r['stars'] for r in reviews) / review_count, 1) if review_count > 0 else None
+
+    return render_template('series_detail.html', content=content, owner=owner, tracking=tracking, progress=progress, reviews=reviews, avg_rating=avg_rating, review_count=review_count)
+
+@bp.route('/<int:content_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit(content_id):
+    db = get_db()
+    content = db.execute(
+        "SELECT * FROM content WHERE content_id = %s",
+        (content_id,)
+    ).fetchone()
+
+    if content is None:
+        abort(404)
+    if content['created_by'] != session['user_id'] or not content['is_private']:
+        abort(403)
+
+    if request.method == 'GET':
+        return render_template('series_edit.html', content=content, current_year=date.today().year)
+
+    name = request.form.get('content_name', '').strip()
+    content_type = request.form.get('type', '')
+    release_year = request.form.get('release_year') or None
+    description = request.form.get('description', '').strip() or None
+    cover_url = request.form.get('cover_url', '').strip() or None
+    link_url = request.form.get('link_url', '').strip() or None
+    total_episodes_raw = request.form.get('total_episodes')
+    total_episodes = int(total_episodes_raw) if total_episodes_raw else None
+    total_seasons_raw = request.form.get('total_seasons')
+    total_seasons = int(total_seasons_raw) if total_seasons_raw else None
+
+    error = None
+    if not name:
+        error = "Name is required."
+    elif not content_type:
+        error = "Type is required."
+
+    if error:
+        flash(error)
+        return render_template('series_edit.html', content=content, current_year=date.today().year)
+
+    db.execute(
+        """UPDATE content SET
+            content_name = %s, type = %s, release_year = %s, description = %s,
+            cover_url = %s, link_url = %s, total_episodes = %s, total_seasons = %s,
+            is_private = true
+            WHERE content_id = %s
+        """,
+        (name, content_type, release_year, description, cover_url, link_url,
+         total_episodes, total_seasons, content_id)
+    )
+    db.commit()
+    return redirect(url_for('series.detail', content_id=content_id))

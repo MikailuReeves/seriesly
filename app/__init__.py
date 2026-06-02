@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from .routes import auth, home, series, tracking
+from .routes import auth, home, series, tracking, search, reviews
 from . import db
 
 def create_app(test_config=None):
@@ -19,5 +19,7 @@ def create_app(test_config=None):
     app.register_blueprint(home.bp)
     app.register_blueprint(tracking.bp, url_prefix='/tracking')
     app.register_blueprint(series.bp, url_prefix='/series')
+    app.register_blueprint(search.bp, url_prefix='/search')
+    app.register_blueprint(reviews.bp, url_prefix='/reviews')
 
     return app
