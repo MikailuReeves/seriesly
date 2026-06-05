@@ -13,22 +13,30 @@
    pip install -r requirements.txt
    ```
 
-2. **Create the database** (one-time)
+2. **Create a `.env` file** (copy from the example and fill in your values)
    ```
-   psql -U postgres -c "CREATE DATABASE seriesly;"
+   cp .env.example .env
+   ```
+   Edit `.env`:
+   ```
+   DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost/seriesly
    ```
 
-3. **Set the database URL** (required every new terminal session)
-   ```powershell
-   $env:DATABASE_URL = "postgresql://postgres:YOUR_PASSWORD@localhost/seriesly"
+3. **Create the database** (one-time)
+   ```
+   psql -U postgres -c "CREATE DATABASE seriesly;"
    ```
 
 4. **Initialize the schema** (one-time)
    ```
    flask --app run init-db
    ```
+5. **Seed the database** (optional)
+   ```
+   python seed.py
+   ```
 
-5. **Start the dev server**
+6. **Start the dev server**
    ```
    python run.py
    ```

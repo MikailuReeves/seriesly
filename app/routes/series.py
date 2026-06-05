@@ -100,6 +100,25 @@ def detail(content_id):
 
     return render_template('series_detail.html', content=content, owner=owner, tracking=tracking, progress=progress, reviews=reviews, avg_rating=avg_rating, review_count=review_count)
 
+@bp.route('/<int:content_id>/delete', methods=['POST'])
+@login_required
+def delete(content_id):
+    db = get_db()
+    content = db.execute(
+        "SELECT * FROM content WHERE content_id = %s",
+        (content_id,)
+    ).fetchone()
+
+    if content is None:
+        abort(404)
+    if content['created_by'] != session['user_id'] or not content['is_private']:
+        abort(403)
+
+    db.execute("DELETE FROM content WHERE content_id = %s", (content_id,))
+    db.commit()
+    return redirect(url_for('home.home'))
+
+
 @bp.route('/<int:content_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(content_id):
