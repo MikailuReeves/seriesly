@@ -41,7 +41,12 @@
         <!-- if we want to add profiles later currently does nothing -->
         <p class="username-tag">Added by <a href="#">@{{ owner['username'] }}</a></p>
         {% if content['created_by'] == session['user_id'] and content['is_private'] %}
-        <a href="{{ url_for('series.edit', content_id=content['content_id']) }}" class="button" style="margin-top: 8px; display: inline-block; font-size: 0.9em; padding: 4px 8px;">Edit series</a>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <a href="{{ url_for('series.edit', content_id=content['content_id']) }}" class="button" style="font-size: 0.9em; padding: 4px 8px;">Edit series</a>
+            <form method="post" action="{{ url_for('series.delete', content_id=content['content_id']) }}" onsubmit="return confirm('Delete this series? This cannot be undone.');">
+                <button type="submit" class="button" style="font-size: 0.9em; padding: 4px 8px; background: #c0392b;">Delete series</button>
+            </form>
+        </div>
         {% endif %}
     </div>
 </div>

@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="page-header">
     <div>
-        <h2>Welcome back, {{ session['username'] }}</h2>
+        <h2>Welcome back, {{ g.user['username'] }}</h2>
         <p>{{ my_content | length }} tracking</p>
     </div>
     <a href="{{ url_for('series.add') }}" class="button">+ Add a series</a>
