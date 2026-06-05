@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from app.db import get_db
 from app.routes.auth import login_required
 import psycopg
@@ -21,9 +21,10 @@ def index():
                 FROM content c
                 JOIN users u ON c.created_by = u.user_id
                 WHERE c.content_name ~* %s
+                  AND (NOT c.is_private OR c.created_by = %s)
                 ORDER BY c.content_name ASC
                 """,
-                (q,)
+                (q, session['user_id'])
             ).fetchall()
         except psycopg.errors.DataError:
             # Handle invalid regex
