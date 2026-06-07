@@ -17,53 +17,53 @@ A community-driven series tracker for TV shows, movies, anime, YouTube series, a
 
 1. **Create and activate a virtual environment**
 ```
-   python -m venv .venv
+python -m venv .venv
 ```
-   Windows:
+Windows:
 ```
-   .venv\Scripts\activate
+.venv\Scripts\activate
 ```
-   macOS / Linux:
+macOS / Linux:
 ```
-   source .venv/bin/activate
+source .venv/bin/activate
 ```
 
 2. **Install dependencies**
 ```
-   pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 3. **Create a `.env` file**
 ```
-   cp .env.example .env
+cp .env.example .env
 ```
-   Edit `.env`:
+Edit `.env`:
 ```
-   DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost/seriesly
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost/seriesly
 ```
 
 4. **Create the database**
 ```
-   psql -U postgres -c "CREATE DATABASE seriesly;"
+psql -U postgres -c "CREATE DATABASE seriesly;"
 ```
 
 5. **Initialize the schema**
 ```
-   flask --app run init-db
+flask --app run init-db
 ```
-   This creates all tables, functions, triggers, and RLS policies defined in `app/schema.sql`.
+This creates all tables, functions, triggers, and RLS policies defined in `app/schema.sql`.
 
 6. **Seed the database** (optional)
 ```
-   python seed.py
+python seed.py
 ```
-   Inserts three users (`alice`, `bob`, `carol`), five public content entries, two private entries, tracking records, and reviews. All seed accounts use the password `password123`.
+Inserts three users (`alice`, `bob`, `carol`), five public content entries, two private entries, tracking records, and reviews. All seed accounts use the password `password123`.
 
 7. **Start the dev server**
 ```
-   python run.py
+python run.py
 ```
-   App runs at http://localhost:5000.
+App runs at http://localhost:5000.
 
 ---
 
@@ -76,18 +76,18 @@ A community-driven series tracker for TV shows, movies, anime, YouTube series, a
 
 1. **Start the containers**
 ```
-   docker compose up --build
+docker compose up --build
 ```
-   App runs at http://localhost:5000.
+App runs at http://localhost:5000.
 
 2. **Seed the database** (optional, in a second terminal)
 ```
-   docker compose exec web python seed.py
+docker compose exec web python seed.py
 ```
 
 3. **Stop the containers**
 ```
-   docker compose down
+docker compose down
 ```
 
 ---
