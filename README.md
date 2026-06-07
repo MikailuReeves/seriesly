@@ -8,12 +8,25 @@
 
 ### Setup
 
-1. **Install dependencies**
+1. **Create and activate a virtual environment**
+   ```
+   python -m venv .venv
+   ```
+   Windows:
+   ```
+   .venv\Scripts\activate
+   ```
+   macOS / Linux:
+   ```
+   source .venv/bin/activate
+   ```
+
+2. **Install dependencies**
    ```
    pip install -r requirements.txt
    ```
 
-2. **Create a `.env` file** (copy from the example and fill in your values)
+3. **Create a `.env` file** (copy from the example and fill in your values)
    ```
    cp .env.example .env
    ```
@@ -22,21 +35,21 @@
    DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost/seriesly
    ```
 
-3. **Create the database** (one-time)
+4. **Create the database** (one-time)
    ```
    psql -U postgres -c "CREATE DATABASE seriesly;"
    ```
 
-4. **Initialize the schema** (one-time)
+5. **Initialize the schema** (one-time)
    ```
    flask --app run init-db
    ```
-5. **Seed the database** (optional)
+6. **Seed the database** (optional)
    ```
    python seed.py
    ```
 
-6. **Start the dev server**
+7. **Start the dev server**
    ```
    python run.py
    ```
