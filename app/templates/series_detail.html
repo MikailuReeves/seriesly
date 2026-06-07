@@ -17,7 +17,7 @@
             <span class="pill-text">{{ content['release_year'] }}</span>
         </div>
 
-        <h3> {{ content['content_name'] }}</h3>
+        <h3>{{ content['content_name'] }}</h3>
 
         <div class="description">
             {{ content['description'] or 'No description provided' }}
@@ -38,8 +38,7 @@
             </div>
         </div>
 
-        <!-- if we want to add profiles later currently does nothing -->
-        <p class="username-tag">Added by <a href="#">@{{ owner['username'] }}</a></p>
+        <p class="username-tag">Added by @{{ owner['username'] }}</p>
         {% if content['created_by'] == session['user_id'] and content['is_private'] %}
         <div style="display: flex; gap: 8px; margin-top: 8px;">
             <a href="{{ url_for('series.edit', content_id=content['content_id']) }}" class="button" style="font-size: 0.9em; padding: 4px 8px;">Edit series</a>
@@ -81,9 +80,7 @@
                 <p class="progress-text">
                     <strong>{{ progress }}%</strong> · ~{{ tracking['current_episode'] or 0 }} of {{ content['total_episodes'] or '?' }} episodes
                 </p>
-                <form method="post" action="{{ url_for('tracking.update', content_id=content['content_id']) }}">
-                    <button type="submit" class="button" style="margin-top: 8px;">Save</button>
-                </form>
+                <button type="submit" class="button" style="margin-top: 8px;">Save</button>
             </form>
             <form method="post" action="{{ url_for('tracking.untrack', content_id=content['content_id']) }}" style="margin-top: 12px;">
                 <button type="submit" class="link-button">Stop tracking</button>
@@ -107,7 +104,7 @@
     <h3 class="section-title">Reviews</h3>
     <div class="panel" style="margin-bottom: 24px;">
         <form method="post" action="{{ url_for('reviews.submit', content_id=content['content_id']) }}">
-            <div class="form-row">
+            <div class="form_row">
                 <div style="flex-grow: 1;">
                     <label for="body">Write a review (optional)</label>
                     <textarea id="body" name="body" rows="2" placeholder="What did you think?"></textarea>

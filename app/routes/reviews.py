@@ -10,7 +10,7 @@ bp = Blueprint("reviews", __name__)
 def submit(content_id):
     stars = request.form.get('stars', type=int)
     body = request.form.get('body', '').strip()
-    
+
     if not stars or not (1 <= stars <= 5):
         flash("Stars must be between 1 and 5.")
         return redirect(url_for('series.detail', content_id=content_id))
@@ -25,7 +25,7 @@ def submit(content_id):
             (session['user_id'], content_id, stars, body)
         )
         db.commit()
-    except psycopg.Error as e:
+    except psycopg.Error:
         db.rollback()
         flash("Could not submit review.")
 
