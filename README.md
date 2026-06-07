@@ -54,3 +54,28 @@
    python run.py
    ```
    App runs at http://localhost:5000.
+
+---
+
+## Running with Docker (recommended)
+
+### Prerequisites
+- Docker and Docker Compose
+
+### Setup
+
+1. **Start the containers** (builds the app image, starts PostgreSQL, initializes the schema)
+   ```
+   docker compose up --build
+   ```
+   App runs at http://localhost:5000.
+
+2. **Seed the database** (optional, in a second terminal)
+   ```
+   docker compose exec web python seed.py
+   ```
+
+3. **Stop the containers**
+   ```
+   docker compose down
+   ```
